@@ -1,0 +1,273 @@
+{
+ "categories": [
+  {
+   "n": "Decoders",
+   "e": "📺"
+  },
+  {
+   "n": "Dishes",
+   "e": "📡"
+  },
+  {
+   "n": "Android Boxes",
+   "e": "📦"
+  },
+  {
+   "n": "Solar Cameras",
+   "e": "📹"
+  },
+  {
+   "n": "Solar Lights",
+   "e": "☀️"
+  },
+  {
+   "n": "Power & Audio",
+   "e": "🔋"
+  },
+  {
+   "n": "Appliances",
+   "e": "❄️"
+  },
+  {
+   "n": "Accessories",
+   "e": "🔌"
+  }
+ ],
+ "products": [
+  {
+   "n": "DStv HD Decoder",
+   "c": "Decoders",
+   "e": "📺",
+   "img": "d9s",
+   "d": "HD satellite decoder, ready to connect.",
+   "t": "Popular"
+  },
+  {
+   "n": "DStv HD Decoder + Dish Set",
+   "c": "Decoders",
+   "e": "📺",
+   "img": "d4u",
+   "d": "DStv HD decoder with remote and dish."
+  },
+  {
+   "n": "GOtv Decoder",
+   "c": "Decoders",
+   "e": "📺",
+   "img": "d9s",
+   "d": "Affordable digital TV decoder."
+  },
+  {
+   "n": "StarTimes Decoder",
+   "c": "Decoders",
+   "e": "📺",
+   "d": "Digital TV decoder with remote."
+  },
+  {
+   "n": "Strong 4954H Receiver",
+   "c": "Decoders",
+   "e": "📻",
+   "img": "strong",
+   "d": "Multi-function satellite receiver. Watch live football via IPTV.",
+   "price": "₦38,000"
+  },
+  {
+   "n": "DStv Dish (Mini)",
+   "c": "Dishes",
+   "e": "📡",
+   "img": "d4u",
+   "d": "Compact dish with LNB for easy installation."
+  },
+  {
+   "n": "80cm Steel Dish Kit",
+   "c": "Dishes",
+   "e": "📡",
+   "img": "space",
+   "d": "80cm steel dish with LNB, wall bracket, 20m coaxial cable and fittings."
+  },
+  {
+   "n": "Large Satellite Dish",
+   "c": "Dishes",
+   "e": "📡",
+   "img": "techno",
+   "d": "Strong signal for weak-signal areas."
+  },
+  {
+   "n": "Ibravebox V9 Satellite Finder",
+   "c": "Dishes",
+   "e": "📡",
+   "d": "Digital satellite signal finder meter.",
+   "price": "₦77,000"
+  },
+  {
+   "n": "Satellite Finder (AHD, Original)",
+   "c": "Dishes",
+   "e": "📡",
+   "d": "Original satellite finder. Brand new.",
+   "price": "₦165,000"
+  },
+  {
+   "n": "Android Box (Q98 8K)",
+   "c": "Android Boxes",
+   "e": "📦",
+   "img": "q98",
+   "d": "Q98 8K Android TV stick with 5G and Google voice. Netflix, YouTube and more.",
+   "t": "New"
+  },
+  {
+   "n": "Q8 Android TV Box",
+   "c": "Android Boxes",
+   "e": "📦",
+   "img": "q98",
+   "d": "Stream Netflix, YouTube and more. Brand new.",
+   "t": "Popular",
+   "price": "₦90,000"
+  },
+  {
+   "n": "Android TV Box + IPTV",
+   "c": "Android Boxes",
+   "e": "📦",
+   "img": "q98",
+   "d": "Netflix, YouTube, Prime Video and 1 month IPTV for live football.",
+   "price": "₦80,000"
+  },
+  {
+   "n": "Xiaoim TV Box",
+   "c": "Android Boxes",
+   "e": "📦",
+   "img": "q98",
+   "d": "Online streaming of Netflix, YouTube and more. Brand new.",
+   "price": "₦78,000"
+  },
+  {
+   "n": "Android TV Box with Netflix",
+   "c": "Android Boxes",
+   "e": "📦",
+   "img": "q98",
+   "d": "Netflix and YouTube, free Netflix for one year. Brand new.",
+   "t": "Hot",
+   "price": "₦48,000"
+  },
+  {
+   "n": "4 Lens Higheasg Solar Camera",
+   "c": "Solar Cameras",
+   "e": "📹",
+   "img": "cam",
+   "d": "4-lens solar camera with 2 solar panels, brackets and user manual.",
+   "t": "New"
+  },
+  {
+   "n": "Double Lens Solar Camera",
+   "c": "Solar Cameras",
+   "e": "📹",
+   "d": "V380 dual-view solar camera, comes with memory card.",
+   "t": "Popular",
+   "price": "₦85,000"
+  },
+  {
+   "n": "3 Lens Solar Camera",
+   "c": "Solar Cameras",
+   "e": "🎥",
+   "d": "V380 3-lens solar camera, comes with memory card.",
+   "price": "₦95,000"
+  },
+  {
+   "n": "Dual Lens Solar Camera",
+   "c": "Solar Cameras",
+   "e": "📹",
+   "d": "Double lens solar camera.",
+   "price": "₦80,000"
+  },
+  {
+   "n": "Big 48 Eyes Solar Street Light, 2000W",
+   "c": "Solar Lights",
+   "e": "☀️",
+   "img": "sl1",
+   "d": "Very big light with remote, pole and accessories. Brand new.",
+   "t": "Hot",
+   "price": "₦90,000"
+  },
+  {
+   "n": "1800W 32 Eyes Solar Light",
+   "c": "Solar Lights",
+   "e": "☀️",
+   "img": "sl2",
+   "d": "Very bright, comes with pole and hanging accessories.",
+   "price": "₦75,000"
+  },
+  {
+   "n": "10 Eyes Industrial Solar Light",
+   "c": "Solar Lights",
+   "e": "💡",
+   "img": "sl1",
+   "d": "Big industrial solar light. Brand new.",
+   "price": "₦138,000"
+  },
+  {
+   "n": "Indoor Solar Light",
+   "c": "Solar Lights",
+   "e": "💡",
+   "img": "sl2",
+   "d": "High quality indoor solar light.",
+   "price": "₦55,000"
+  },
+  {
+   "n": "Haisic Power Bank 120,000mAh",
+   "c": "Power & Audio",
+   "e": "🔋",
+   "d": "Heavy-duty power bank. Brand new.",
+   "price": "₦85,000"
+  },
+  {
+   "n": "Zealot S98",
+   "c": "Power & Audio",
+   "e": "🔊",
+   "d": "Very strong bass. Brand new.",
+   "price": "₦310,000"
+  },
+  {
+   "n": "Midea 3-Ton Inverter Split AC",
+   "c": "Appliances",
+   "e": "❄️",
+   "d": "Original, brand new. Choose to match your generator's KVA.",
+   "price": "₦1,975,000"
+  },
+  {
+   "n": "Skyrun 200L Chest Freezer",
+   "c": "Appliances",
+   "e": "🧊",
+   "d": "Fast cooling, energy saving, durable. Brand new.",
+   "price": "₦415,000"
+  },
+  {
+   "n": "Skyrun 300L Deep Freezer",
+   "c": "Appliances",
+   "e": "🧊",
+   "d": "Anti-rust, silent operation, good insulation. Brand new.",
+   "price": "₦475,000"
+  },
+  {
+   "n": "DStv / GOtv Remote",
+   "c": "Accessories",
+   "e": "🎛️",
+   "d": "Replacement remote control."
+  },
+  {
+   "n": "12V 2A Power Adapter",
+   "c": "Accessories",
+   "e": "🔌",
+   "d": "DStv/GOtv compatible adapter."
+  },
+  {
+   "n": "LNB & Coaxial Cable",
+   "c": "Accessories",
+   "e": "🧰",
+   "d": "Dish LNB and cable for installation."
+  },
+  {
+   "n": "HDMI Cable",
+   "c": "Accessories",
+   "e": "🔗",
+   "d": "High-speed HDMI cable for TV and boxes."
+  }
+ ]
+}
