@@ -72,6 +72,10 @@ button:disabled{opacity:.5}
   </div>
   <p id="cnt" style="color:var(--m);font-size:13px;margin:0 0 8px"></p>
   <div id="plist"></div>
+  <div class="card" style="margin-top:16px"><b>💬 Live chat (Tawk.to)</b><label>Paste your Tawk.to widget code or ID</label><input id="tk" oninput="setTk()" placeholder="e.g. 64abc123/1h9xyz or the full code" autocapitalize="none"><small id="tkm" style="color:var(--m)"></small></div>
+  <div class="card"><b>📣 Promo banner</b><label>Message shown at the top of your site (leave empty to hide)</label><input id="s_promo" oninput="setS()" placeholder="e.g. Free installation this week!"></div>
+  <div class="card"><b>🔗 Social links &amp; email</b><label>Instagram link</label><input id="s_ig" oninput="setS()" autocapitalize="none"><label>Facebook link</label><input id="s_fb" oninput="setS()" autocapitalize="none"><label>TikTok link</label><input id="s_tt" oninput="setS()" autocapitalize="none"><label>YouTube link</label><input id="s_yt" oninput="setS()" autocapitalize="none"><label>Business email</label><input id="s_em" oninput="setS()" autocapitalize="none"></div>
+  <div class="card"><b>⭐ Customer reviews</b><label>One per line, like: Chidi | Fast reply and genuine product</label><textarea id="s_rv" oninput="setS()" style="min-height:120px"></textarea></div>
 </div>
 </div>
 
@@ -108,7 +112,7 @@ async function start(fresh){
     else if(r.status==404){D={categories:DEF.c,products:DEF.p};dirty=true}
     else{msg("Error "+r.status);return}
     localStorage.setItem("ls_admin",JSON.stringify(S));
-    $("login").hidden=true;$("app").hidden=false;$("out").hidden=false;
+    $("tk").value=D.tawk||"";D.social=D.social||{};$("s_promo").value=D.promo||"";$("s_ig").value=D.social.ig||"";$("s_fb").value=D.social.fb||"";$("s_tt").value=D.social.tt||"";$("s_yt").value=D.social.yt||"";$("s_em").value=D.email||"";$("s_rv").value=(D.reviews||[]).map(function(r){return (r.n||"")+" | "+r.t}).join("\n");$("tkm").textContent=D.tawk?"✔ Chat ID found: "+D.tawk:"";$("login").hidden=true;$("app").hidden=false;$("out").hidden=false;
     msg(dirty?"Tap Publish changes to start using the admin.":"Loaded "+D.products.length+" products.");list();
   }catch(e){msg("");alert("Error: "+e.message)}
 }
@@ -123,6 +127,8 @@ function list(){
   $("cnt").textContent=D.products.length+" products";
   $("save").disabled=!dirty;
 }
+function setTk(){var v=$("tk").value,m=v.match(/embed\.tawk\.to\/([\w-]+\/[\w-]+)/);D.tawk=m?m[1]:(/^[\w-]+\/[\w-]+$/.test(v.trim())?v.trim():"");$("tkm").textContent=D.tawk?"✔ Chat ID found: "+D.tawk:"Not set or not recognised yet";dirty=true;$("save").disabled=false}
+function setS(){D.promo=$("s_promo").value.trim();D.social={ig:$("s_ig").value.trim(),fb:$("s_fb").value.trim(),tt:$("s_tt").value.trim(),yt:$("s_yt").value.trim()};D.email=$("s_em").value.trim();D.reviews=$("s_rv").value.split("\n").map(function(l){var i=l.indexOf("|");return i<0?{n:"",t:l.trim()}:{n:l.slice(0,i).trim(),t:l.slice(i+1).trim()}}).filter(function(r){return r.t});dirty=true;$("save").disabled=false}
 function del(i){if(confirm("Delete "+D.products[i].n+"?")){D.products.splice(i,1);dirty=true;list()}}
 
 function openForm(i){
@@ -167,7 +173,7 @@ async function publish(){
       if(p._pend){msg("Uploading photo "+(i+1)+"…");await put(p._pend.path,p._pend.b64,"Add product photo");p.img=p._pend.path;delete p._pend}}
     var used={};D.products.forEach(function(p){used[p.c]=1});
     D.categories=D.categories.filter(function(c){return used[c.n]});
-    var out={categories:D.categories,products:D.products.map(function(p){var c={};for(var k in p)if(k[0]!=="_")c[k]=p[k];return c})};
+    var out={tawk:D.tawk||"",promo:D.promo||"",email:D.email||"",social:D.social||{},reviews:D.reviews||[],categories:D.categories,products:D.products.map(function(p){var c={};for(var k in p)if(k[0]!=="_")c[k]=p[k];return c})};
     msg("Saving catalog…");
     var sha=null,r=await api("/contents/catalog.json?ref="+S.b+"&t="+Date.now());
     if(r.ok)sha=(await r.json()).sha;
