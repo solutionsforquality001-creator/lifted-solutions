@@ -88,6 +88,7 @@ footer .wrap{display:flex;gap:24px;flex-wrap:wrap;align-items:center;justify-con
 .fl{background:#fff;border-radius:14px;padding:8px 14px}.fl img{display:block;width:210px;max-width:60vw;height:auto}
 footer a{color:var(--gold2);font-weight:700}
 .fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:58px;height:58px;border-radius:50%;background:var(--wa);display:grid;place-items:center;box-shadow:0 8px 22px rgba(0,0,0,.35);z-index:40;font-size:28px;animation:pu 2.4s infinite}
+.tk .fab{right:auto;left:16px}
 @keyframes pu{0%{box-shadow:0 0 0 0 rgba(37,211,102,.6)}70%,100%{box-shadow:0 0 0 18px rgba(37,211,102,0)}}
 .js .rv{opacity:0;transform:translateY(22px);transition:opacity .6s,transform .6s}
 .js .rv.in{opacity:1;transform:none}
@@ -212,11 +213,13 @@ document.getElementById("catgrid").onclick=function(e){var el=e.target.closest("
 document.getElementById("q").oninput=function(e){term=e.target.value.toLowerCase().trim();render()};
 document.getElementById("stack").innerHTML=["cam","q98","strong"].map(function(k){return '<img src="'+IMG[k]+'" alt="">'}).join("");
 var t="Decoders ✦ Dishes ✦ Android Boxes ✦ Solar Cameras ✦ Solar Lights ✦ Appliances ✦ ";document.getElementById("tk").innerHTML=t+t+t+t;
+function loadTawk(v){var m=String(v).match(/embed\.tawk\.to\/([\w-]+\/[\w-]+)/),id=m?m[1]:(/^[\w-]+\/[\w-]+$/.test(String(v).trim())?String(v).trim():"");if(!id||window.Tawk_API)return;document.body.classList.add("tk");window.Tawk_API={};window.Tawk_LoadStart=new Date();var s=document.createElement("script");s.async=true;s.src="https://embed.tawk.to/"+id;s.charset="UTF-8";s.setAttribute("crossorigin","*");document.head.appendChild(s)}
+loadTawk("https://embed.tawk.to/6ad1a3576e930434c7964f85/default");
 var hi=wa("Hello Lifted Solution, I'd like to make an enquiry.");
 Array.prototype.forEach.call(document.querySelectorAll(".wl"),function(a){a.href=hi});
 document.getElementById("yr").textContent=new Date().getFullYear();
 chips();render();
-fetch("catalog.json?"+Date.now()).then(function(r){return r.ok?r.json():null}).then(function(d){if(d&&d.products){P=d.products;if(d.categories)CATS=d.categories;cur="All";chips();cats();render()}}).catch(function(){});
+fetch("catalog.json?"+Date.now()).then(function(r){return r.ok?r.json():null}).then(function(d){if(d&&d.tawk)loadTawk(d.tawk);if(d&&d.products){P=d.products;if(d.categories)CATS=d.categories;cur="All";chips();cats();render()}}).catch(function(){});
 if("IntersectionObserver" in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.1});Array.prototype.forEach.call(document.querySelectorAll(".rv"),function(el){io.observe(el)})}else{Array.prototype.forEach.call(document.querySelectorAll(".rv"),function(el){el.classList.add("in")})}
 </script>
 </body>
