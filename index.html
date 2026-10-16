@@ -198,7 +198,7 @@ function render(){
   var out=P.filter(function(p){return (cur==="All"||p.c===cur)&&((p.n+" "+p.d+" "+p.c).toLowerCase().indexOf(term)>-1)});
   document.getElementById("grid").innerHTML=out.map(function(p){
     var m="Hello Lifted Solution, I'm interested in: "+p.n+". Please send price and availability.";
-    return '<div class="p"><div class="img">'+(p.t?'<span class="tag">'+p.t+'</span>':'')+(p.img?'<img src="'+IMG[p.img]+'" alt="'+esc(p.n)+'" loading="lazy">':p.e)+'</div><div class="b"><h3>'+esc(p.n)+'</h3><small>'+esc(p.d)+'</small><div class="price'+(p.price?'':' ask')+'">'+(p.price||"Ask for price")+'</div><a class="btn wa" target="_blank" rel="noopener" href="'+wa(m)+'">Order on WhatsApp</a></div></div>'}).join("");
+    return '<div class="p"><div class="img">'+(p.t?'<span class="tag">'+p.t+'</span>':'')+(p.img?'<img src="'+(IMG[p.img]||p.img)+'" alt="'+esc(p.n)+'" loading="lazy">':p.e)+'</div><div class="b"><h3>'+esc(p.n)+'</h3><small>'+esc(p.d)+'</small><div class="price'+(p.price?'':' ask')+'">'+(p.price||"Ask for price")+'</div>'+(p.out?'<span class="btn" style="opacity:.55;cursor:default">Sold out</span>':'<a class="btn wa" target="_blank" rel="noopener" href="'+wa(m)+'">Order on WhatsApp</a>')+'</div></div>'}).join("");
   document.getElementById("empty").hidden=out.length>0;
 }
 function chips(){
@@ -207,7 +207,7 @@ function chips(){
 }
 function pick(n){cur=n;chips();render()}
 document.getElementById("chips").onclick=function(e){var c=e.target.getAttribute("data-c");if(c)pick(c)};
-document.getElementById("catgrid").innerHTML=CATS.map(function(c){var k=P.filter(function(p){return p.c===c.n}).length;return '<div class="cat" data-c="'+c.n+'"><span>'+c.e+'</span>'+c.n+'<small>'+k+' items</small></div>'}).join("");
+function cats(){document.getElementById("catgrid").innerHTML=CATS.map(function(c){var k=P.filter(function(p){return p.c===c.n}).length;return '<div class="cat" data-c="'+c.n+'"><span>'+c.e+'</span>'+c.n+'<small>'+k+' items</small></div>'}).join("");}cats();
 document.getElementById("catgrid").onclick=function(e){var el=e.target.closest(".cat");if(el){pick(el.getAttribute("data-c"));document.getElementById("shop").scrollIntoView()}};
 document.getElementById("q").oninput=function(e){term=e.target.value.toLowerCase().trim();render()};
 document.getElementById("stack").innerHTML=["cam","q98","strong"].map(function(k){return '<img src="'+IMG[k]+'" alt="">'}).join("");
@@ -216,6 +216,7 @@ var hi=wa("Hello Lifted Solution, I'd like to make an enquiry.");
 Array.prototype.forEach.call(document.querySelectorAll(".wl"),function(a){a.href=hi});
 document.getElementById("yr").textContent=new Date().getFullYear();
 chips();render();
+fetch("catalog.json?"+Date.now()).then(function(r){return r.ok?r.json():null}).then(function(d){if(d&&d.products){P=d.products;if(d.categories)CATS=d.categories;cur="All";chips();cats();render()}}).catch(function(){});
 if("IntersectionObserver" in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.1});Array.prototype.forEach.call(document.querySelectorAll(".rv"),function(el){io.observe(el)})}else{Array.prototype.forEach.call(document.querySelectorAll(".rv"),function(el){el.classList.add("in")})}
 </script>
 </body>
