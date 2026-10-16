@@ -60,7 +60,8 @@
    "n": "StarTimes Decoder",
    "c": "Decoders",
    "e": "📺",
-   "d": "Digital TV decoder with remote."
+   "d": "Digital TV decoder with remote.",
+   "img": "img/p-1792123411234.jpg"
   },
   {
    "n": "Strong 4954H Receiver",
@@ -96,20 +97,22 @@
    "c": "Dishes",
    "e": "📡",
    "d": "Digital satellite signal finder meter.",
-   "price": "₦77,000"
+   "price": "₦77,000",
+   "img": "img/p-1792122917789.jpg"
   },
   {
    "n": "Satellite Finder (AHD, Original)",
    "c": "Dishes",
    "e": "📡",
    "d": "Original satellite finder. Brand new.",
-   "price": "₦165,000"
+   "price": "₦165,000",
+   "img": "img/p-1792122940209.jpg"
   },
   {
    "n": "Android Box (Q98 8K)",
    "c": "Android Boxes",
    "e": "📦",
-   "img": "q98",
+   "img": "img/p-1792122878367.jpg",
    "d": "Q98 8K Android TV stick with 5G and Google voice. Netflix, YouTube and more.",
    "t": "New"
   },
@@ -117,7 +120,7 @@
    "n": "Q8 Android TV Box",
    "c": "Android Boxes",
    "e": "📦",
-   "img": "q98",
+   "img": "img/p-1792122963550.jpg",
    "d": "Stream Netflix, YouTube and more. Brand new.",
    "t": "Popular",
    "price": "₦90,000"
@@ -126,7 +129,7 @@
    "n": "Android TV Box + IPTV",
    "c": "Android Boxes",
    "e": "📦",
-   "img": "q98",
+   "img": "img/p-1792122980740.jpg",
    "d": "Netflix, YouTube, Prime Video and 1 month IPTV for live football.",
    "price": "₦80,000"
   },
@@ -134,7 +137,7 @@
    "n": "Xiaoim TV Box",
    "c": "Android Boxes",
    "e": "📦",
-   "img": "q98",
+   "img": "img/p-1792122989152.jpg",
    "d": "Online streaming of Netflix, YouTube and more. Brand new.",
    "price": "₦78,000"
   },
@@ -142,18 +145,19 @@
    "n": "Android TV Box with Netflix",
    "c": "Android Boxes",
    "e": "📦",
-   "img": "q98",
+   "img": "img/p-1792123048794.jpg",
    "d": "Netflix and YouTube, free Netflix for one year. Brand new.",
    "t": "Hot",
    "price": "₦48,000"
   },
   {
-   "n": "4 Lens Higheasg Solar Camera",
+   "n": "4 Lens Higheasy Solar Camera",
    "c": "Solar Cameras",
    "e": "📹",
    "img": "cam",
    "d": "4-lens solar camera with 2 solar panels, brackets and user manual.",
-   "t": "New"
+   "t": "New",
+   "price": "120,000"
   },
   {
    "n": "Double Lens Solar Camera",
@@ -161,21 +165,24 @@
    "e": "📹",
    "d": "V380 dual-view solar camera, comes with memory card.",
    "t": "Popular",
-   "price": "₦85,000"
+   "price": "₦50,000",
+   "img": "img/p-1792122477873.jpg"
   },
   {
    "n": "3 Lens Solar Camera",
    "c": "Solar Cameras",
    "e": "🎥",
    "d": "V380 3-lens solar camera, comes with memory card.",
-   "price": "₦95,000"
+   "price": "₦95,000",
+   "img": "img/p-1792123213351.jpg"
   },
   {
    "n": "Dual Lens Solar Camera",
    "c": "Solar Cameras",
    "e": "📹",
    "d": "Double lens solar camera.",
-   "price": "₦80,000"
+   "price": "₦80,000",
+   "img": "img/p-1792123293885.jpg"
   },
   {
    "n": "Big 48 Eyes Solar Street Light, 2000W",
@@ -224,7 +231,8 @@
    "c": "Power & Audio",
    "e": "🔊",
    "d": "Very strong bass. Brand new.",
-   "price": "₦310,000"
+   "price": "₦310,000",
+   "img": "img/p-1792123310736.jpg"
   },
   {
    "n": "Midea 3-Ton Inverter Split AC",
