@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin – Lifted Solution</title>
+<style>
+:root{--n:#16224a;--g:#c69a5b;--bg:#f5f3ee;--c:#fff;--i:#141a30;--m:#5f6680;--l:#e0dacb}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1126;--c:#141b38;--i:#f1efe8;--m:#a3abc8;--l:#26305a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--i);font:16px/1.5 system-ui,sans-serif;padding-bottom:100px}
+header{background:var(--n);color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
+header b{font:800 17px Georgia,serif}
+.w{max-width:720px;margin:0 auto;padding:16px}
+.card{background:var(--c);border:1px solid var(--l);border-radius:16px;padding:16px;margin-bottom:14px}
+label{display:block;font-size:13px;font-weight:700;margin:10px 0 4px;color:var(--m)}
+input,select,textarea{width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--l);background:var(--bg);color:var(--i);font:inherit}
+textarea{min-height:70px}
+button{border:0;border-radius:10px;padding:11px 16px;font:700 14px system-ui,sans-serif;cursor:pointer;background:var(--n);color:#fff}
+button.g{background:var(--g);color:#2a1d05}
+button.o{background:transparent;color:var(--i);border:1.5px solid var(--l)}
+button:disabled{opacity:.5}
+.row{display:flex;gap:10px;align-items:center;background:var(--c);border:1px solid var(--l);border-radius:14px;padding:10px;margin-bottom:8px}
+.row img,.em{width:56px;height:56px;border-radius:10px;object-fit:cover;flex:none;background:var(--bg);display:grid;place-items:center;font-size:28px}
+.inf{flex:1;min-width:0}.inf b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.inf small{color:var(--m)}
+.act{display:flex;gap:6px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--c);border-top:1px solid var(--l);padding:12px 16px;display:flex;gap:12px;align-items:center;justify-content:space-between;z-index:6}
+#msg{font-size:13px;color:var(--m);flex:1}
+#pv{width:120px;height:120px;object-fit:cover;border-radius:12px;margin-top:8px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header><b>Lifted Solution · Admin</b><button class="o" id="out" onclick="logout()" hidden style="color:#fff;border-color:#fff4">Log out</button></header>
+<div class="w">
+
+<div id="login" class="card">
+  <h3 style="margin-top:0">Connect to GitHub</h3>
+  <p style="color:var(--m);font-size:14px">Paste your GitHub access token once. It is saved only in this browser.</p>
+  <label>GitHub username</label><input id="o" value="solutionsforquality001-creator" autocapitalize="none">
+  <label>Repository name</label><input id="r" value="lifted-solutions" autocapitalize="none">
+  <label>Branch</label><input id="b" value="main" autocapitalize="none">
+  <label>Access token</label><input id="t" type="password" placeholder="github_pat_..." autocapitalize="none">
+  <p><button class="g" onclick="connect()">Connect</button></p>
+</div>
+
+<div id="app" hidden>
+  <div class="card" id="form" hidden>
+    <h3 style="margin-top:0" id="ft">Product</h3>
+    <label>Product name</label><input id="fn">
+    <div class="two">
+      <div><label>Price (e.g. ₦85,000)</label><input id="fp"></div>
+      <div><label>Badge</label><select id="ft2"><option value="">None</option><option>New</option><option>Hot</option><option>Popular</option><option>Sale</option></select></div>
+    </div>
+    <label>Category</label><select id="fc"></select>
+    <label>Or create a new category</label><input id="fnc" placeholder="Leave empty to use the one above">
+    <label>Description</label><textarea id="fd"></textarea>
+    <div class="two">
+      <div><label>Emoji (shown if no photo)</label><input id="fe"></div>
+      <div><label>Stock</label><select id="fo"><option value="0">In stock</option><option value="1">Sold out</option></select></div>
+    </div>
+    <label>Photo</label><input id="ff" type="file" accept="image/*" onchange="pick(this.files[0])">
+    <img id="pv" hidden>
+    <p style="display:flex;gap:10px"><button class="g" onclick="saveForm()">Done</button><button class="o" onclick="closeForm()">Cancel</button></p>
+  </div>
+
+  <div style="display:flex;gap:10px;margin-bottom:12px">
+    <input id="q" placeholder="Search products…" oninput="list()">
+    <button class="g" onclick="openForm(-1)" style="white-space:nowrap">+ Add</button>
+  </div>
+  <p id="cnt" style="color:var(--m);font-size:13px;margin:0 0 8px"></p>
+  <div id="plist"></div>
+</div>
+</div>
+
+<div class="bar" id="bar" hidden><span id="msg"></span><button class="g" id="save" onclick="publish()" disabled>Publish changes</button></div>
+
+<script>
+var $=function(i){return document.getElementById(i)};
+var S=JSON.parse(localStorage.getItem("ls_admin")||"{}");
+var D={categories:[],products:[]},IMG={},DEF={c:[],p:[]},dirty=false,cur=null,ed=-1;
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;")}
+function msg(t){$("msg").textContent=t}
+function api(path,o){o=o||{};o.headers={Authorization:"Bearer "+S.t,Accept:"application/vnd.github+json","Content-Type":"application/json"};return fetch("https://api.github.com/repos/"+S.o+"/"+S.r+path,o)}
+function b64(s){return btoa(unescape(encodeURIComponent(s)))}
+function unb64(s){var b=atob(s.replace(/\n/g,"")),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new TextDecoder().decode(a)}
+function grab(t,re){var m=t.match(re);return m?new Function("return "+m[1])():null}
+
+function connect(){
+  S={o:$("o").value.trim(),r:$("r").value.trim(),b:$("b").value.trim()||"main",t:$("t").value.trim()};
+  if(!S.t){alert("Paste your access token");return}
+  start(true);
+}
+function logout(){localStorage.removeItem("ls_admin");location.reload()}
+
+async function start(fresh){
+  $("bar").hidden=false;msg("Connecting…");
+  try{
+    var rp=await api("");
+    if(!rp.ok){msg("");$("bar").hidden=true;alert("Could not open the repository. Check the username, repository name and token.");return}
+    var t=await (await fetch("index.html?"+Date.now())).text();
+    IMG=grab(t,/var IMG=(\{[\s\S]*?\});/)||{};
+    DEF={c:grab(t,/var CATS=(\[[\s\S]*?\]);/)||[],p:grab(t,/var P=(\[[\s\S]*?\n\]);/)||[]};
+    var r=await api("/contents/catalog.json?ref="+S.b+"&t="+Date.now());
+    if(r.ok){var j=await r.json();D=JSON.parse(unb64(j.content));dirty=false}
+    else if(r.status==404){D={categories:DEF.c,products:DEF.p};dirty=true}
+    else{msg("Error "+r.status);return}
+    localStorage.setItem("ls_admin",JSON.stringify(S));
+    $("login").hidden=true;$("app").hidden=false;$("out").hidden=false;
+    msg(dirty?"Tap Publish changes to start using the admin.":"Loaded "+D.products.length+" products.");list();
+  }catch(e){msg("");alert("Error: "+e.message)}
+}
+
+function th(p){return p._prev||IMG[p.img]||p.img||""}
+function list(){
+  var q=$("q").value.toLowerCase();
+  $("plist").innerHTML=D.products.map(function(p,i){
+    if(q&&(p.n+" "+p.c).toLowerCase().indexOf(q)<0)return "";
+    var im=th(p);
+    return '<div class="row">'+(im?'<img src="'+esc(im)+'">':'<span class="em">'+esc(p.e||"📦")+'</span>')+'<div class="inf"><b>'+esc(p.n)+'</b><small>'+esc(p.c)+' · '+esc(p.price||"Ask for price")+(p.out?' · SOLD OUT':'')+'</small></div><div class="act"><button class="o" onclick="openForm('+i+')">Edit</button><button class="o" onclick="del('+i+')">✕</button></div></div>'}).join("");
+  $("cnt").textContent=D.products.length+" products";
+  $("save").disabled=!dirty;
+}
+function del(i){if(confirm("Delete "+D.products[i].n+"?")){D.products.splice(i,1);dirty=true;list()}}
+
+function openForm(i){
+  ed=i;cur=i>=0?Object.assign({},D.products[i]):{n:"",c:D.categories.length?D.categories[0].n:"",e:"📦",d:"",price:"",t:""};
+  $("ft").textContent=i>=0?"Edit product":"Add product";
+  $("fn").value=cur.n;$("fp").value=cur.price||"";$("ft2").value=cur.t||"";$("fd").value=cur.d||"";$("fe").value=cur.e||"";$("fo").value=cur.out?"1":"0";$("fnc").value="";$("ff").value="";
+  $("fc").innerHTML=D.categories.map(function(c){return '<option'+(c.n==cur.c?' selected':'')+'>'+esc(c.n)+'</option>'}).join("");
+  var im=th(cur);$("pv").hidden=!im;if(im)$("pv").src=im;
+  $("form").hidden=false;$("form").scrollIntoView();
+}
+function closeForm(){$("form").hidden=true}
+function pick(f){
+  if(!f)return;var r=new FileReader();
+  r.onload=function(){var im=new Image();im.onload=function(){
+    var s=Math.min(1,800/Math.max(im.width,im.height)),c=document.createElement("canvas");
+    c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+    var u=c.toDataURL("image/jpeg",.82);cur._prev=u;cur._pend={path:"img/p-"+Date.now()+".jpg",b64:u.split(",")[1]};
+    $("pv").src=u;$("pv").hidden=false};im.src=r.result};
+  r.readAsDataURL(f);
+}
+function saveForm(){
+  var n=$("fn").value.trim();if(!n){alert("Enter the product name");return}
+  var cat=$("fnc").value.trim()||$("fc").value;
+  if(!cat){alert("Enter a category");return}
+  if(!D.categories.some(function(c){return c.n==cat}))D.categories.push({n:cat,e:$("fe").value||"📦"});
+  cur.n=n;cur.c=cat;cur.price=$("fp").value.trim();cur.t=$("ft2").value;cur.d=$("fd").value.trim();cur.e=$("fe").value||"📦";
+  if($("fo").value=="1")cur.out=true;else delete cur.out;
+  if(!cur.price)delete cur.price;if(!cur.t)delete cur.t;
+  if(ed>=0)D.products[ed]=cur;else D.products.unshift(cur);
+  dirty=true;closeForm();list();msg("Not published yet. Tap Publish changes.");
+}
+
+async function put(path,content,message,sha){
+  var body={message:message,content:content,branch:S.b};if(sha)body.sha=sha;
+  var r=await api("/contents/"+path,{method:"PUT",body:JSON.stringify(body)});
+  if(!r.ok){var e="";try{e=(await r.json()).message}catch(x){}throw new Error(path+": "+r.status+" "+e)}
+}
+async function publish(){
+  $("save").disabled=true;
+  try{
+    for(var i=0;i<D.products.length;i++){var p=D.products[i];
+      if(p._pend){msg("Uploading photo "+(i+1)+"…");await put(p._pend.path,p._pend.b64,"Add product photo");p.img=p._pend.path;delete p._pend}}
+    var used={};D.products.forEach(function(p){used[p.c]=1});
+    D.categories=D.categories.filter(function(c){return used[c.n]});
+    var out={categories:D.categories,products:D.products.map(function(p){var c={};for(var k in p)if(k[0]!=="_")c[k]=p[k];return c})};
+    msg("Saving catalog…");
+    var sha=null,r=await api("/contents/catalog.json?ref="+S.b+"&t="+Date.now());
+    if(r.ok)sha=(await r.json()).sha;
+    await put("catalog.json",b64(JSON.stringify(out,null,1)),"Update catalog",sha);
+    dirty=false;msg("Published! Your site updates in about 1 minute.");list();
+  }catch(e){msg("");alert("Could not publish: "+e.message);$("save").disabled=false}
+}
+window.onbeforeunload=function(){return dirty?"You have unpublished changes":undefined};
+if(S.t){$("o").value=S.o;$("r").value=S.r;$("b").value=S.b;start()}
+</script>
+</body>
+</html>
