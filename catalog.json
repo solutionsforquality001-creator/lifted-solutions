@@ -167,7 +167,8 @@
    "img": "cam",
    "d": "4-lens solar camera with 2 solar panels, brackets and user manual.",
    "t": "New",
-   "price": "120,000"
+   "price": "120,000",
+   "video": "video/v-1792712763837.mp4"
   },
   {
    "n": "Double Lens Solar Camera",
@@ -289,5 +290,6 @@
    "e": "🔗",
    "d": "High-speed HDMI cable for TV and boxes."
   }
- ]
+ ],
+ "videos": []
 }
