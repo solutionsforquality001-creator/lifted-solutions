@@ -41,7 +41,7 @@ button:disabled{opacity:.5}
 </style>
 </head>
 <body>
-<header><b>Lifted Solution · Admin</b><button class="o" id="out" onclick="logout()" hidden style="color:#fff;border-color:#fff4">Log out</button></header>
+<header><b>Lifted Solution · Admin</b><a href="/videos.html" style="color:#fff;font-size:13px;margin-right:12px">🎬 Videos</a><button class="o" id="out" onclick="logout()" hidden style="color:#fff;border-color:#fff4">Log out</button></header>
 <div class="w">
 
 <div id="login" class="card">
@@ -182,10 +182,10 @@ async function publish(){
       if(p._pend){msg("Uploading photo "+(i+1)+"…");await put(p._pend.path,p._pend.b64,"Add product photo");p.img=p._pend.path;delete p._pend}}
     var used={};D.products.forEach(function(p){used[p.c]=1});
     D.categories=D.categories.filter(function(c){return used[c.n]});
-    var out={tawk:D.tawk||"",paystack:D.paystack||"",promo:D.promo||"",email:D.email||"",social:D.social||{},reviews:D.reviews||[],categories:D.categories,products:D.products.map(function(p){var c={};for(var k in p)if(k[0]!=="_")c[k]=p[k];return c})};
+    var out={tawk:D.tawk||"",paystack:D.paystack||"",videos:D.videos||[],promo:D.promo||"",email:D.email||"",social:D.social||{},reviews:D.reviews||[],categories:D.categories,products:D.products.map(function(p){var c={};for(var k in p)if(k[0]!=="_")c[k]=p[k];return c})};
     msg("Saving catalog…");
     var sha=null,r=await api("/contents/catalog.json?ref="+S.b+"&t="+Date.now());
-    if(r.ok)sha=(await r.json()).sha;
+    if(r.ok){var j=await r.json();sha=j.sha;var F=JSON.parse(unb64(j.content)),fm={};(F.products||[]).forEach(function(p){fm[p.n]=p});out.videos=F.videos||[];out.products.forEach(function(p){var f=fm[p.n];if(f){if(f.video)p.video=f.video;else delete p.video}})}
     await put("catalog.json",b64(JSON.stringify(out,null,1)),"Update catalog",sha);
     dirty=false;msg("Published! Your site updates in about 1 minute.");list();
   }catch(e){msg("");alert("Could not publish: "+e.message);$("save").disabled=false}

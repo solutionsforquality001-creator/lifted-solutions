@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Videos Admin – Lifted Solution</title>
+<link rel="icon" href="/icon-192.png">
+<style>
+:root{--n:#16224a;--g:#c69a5b;--bg:#f5f3ee;--c:#fff;--i:#141a30;--m:#5f6680;--l:#e0dacb}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1126;--c:#141b38;--i:#f1efe8;--m:#a3abc8;--l:#26305a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--i);font:16px/1.5 system-ui,sans-serif;padding-bottom:100px}
+header{background:var(--n);color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
+header b{font:800 17px Georgia,serif}header a{color:#fff;font-size:13px}
+.w{max-width:720px;margin:0 auto;padding:16px}
+.card{background:var(--c);border:1px solid var(--l);border-radius:16px;padding:14px;margin-bottom:12px}
+label{display:block;font-size:13px;font-weight:700;margin:10px 0 4px;color:var(--m)}
+input,textarea{width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--l);background:var(--bg);color:var(--i);font:inherit;margin-bottom:6px}
+button{border:0;border-radius:10px;padding:11px 16px;font:700 14px system-ui,sans-serif;cursor:pointer;background:var(--n);color:#fff}
+button.g{background:var(--g);color:#2a1d05}button.o{background:transparent;color:var(--i);border:1.5px solid var(--l)}button:disabled{opacity:.5}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--c);border-top:1px solid var(--l);padding:12px 16px;display:flex;gap:12px;align-items:center;justify-content:space-between;z-index:6}
+#msg{font-size:13px;color:var(--m);flex:1}small{color:var(--m)}h3{margin:18px 0 8px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header><b>🎬 Videos Admin</b><span><a href="/admin.html">← Main admin</a></span></header>
+<div class="w">
+<div id="login" class="card" hidden>
+  <h3 style="margin-top:0">Connect to GitHub</h3>
+  <label>GitHub username</label><input id="o" value="solutionsforquality001-creator" autocapitalize="none">
+  <label>Repository name</label><input id="r" value="lifted-solutions" autocapitalize="none">
+  <label>Branch</label><input id="b" value="main" autocapitalize="none">
+  <label>Access token</label><input id="t" type="password" placeholder="github_pat_..." autocapitalize="none">
+  <button class="g" onclick="connect()">Connect</button>
+</div>
+<div id="app" hidden>
+  <h3>Homepage videos</h3>
+  <p style="margin:0 0 8px"><small>These show in the "See it in action" section. Use YouTube, TikTok or Facebook links.</small></p>
+  <div id="hv"></div>
+  <button class="g" onclick="addHV()">+ Add homepage video</button>
+  <h3>Product videos</h3>
+  <input id="q" placeholder="Search products…" oninput="rp()">
+  <div id="pl"></div>
+</div>
+</div>
+<div class="bar" id="bar" hidden><span id="msg"></span><button class="g" id="save" onclick="publish()" disabled>Publish videos</button></div>
+<script>
+var $=function(i){return document.getElementById(i)};
+var S=JSON.parse(localStorage.getItem("ls_admin")||"{}"),D=null,HV=[],ED={},PEND={},dirty=false;
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;")}
+function msg(t){$("msg").textContent=t}
+function api(p,o){o=o||{};o.headers={Authorization:"Bearer "+S.t,Accept:"application/vnd.github+json","Content-Type":"application/json"};return fetch("https://api.github.com/repos/"+S.o+"/"+S.r+p,o)}
+function b64(s){return btoa(unescape(encodeURIComponent(s)))}
+function unb64(s){var b=atob(s.replace(/\n/g,"")),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new TextDecoder().decode(a)}
+function mk(){dirty=true;$("save").disabled=false;msg("Not published yet. Tap Publish videos.")}
+function connect(){S={o:$("o").value.trim(),r:$("r").value.trim(),b:$("b").value.trim()||"main",t:$("t").value.trim()};if(!S.t){alert("Paste your access token");return}localStorage.setItem("ls_admin",JSON.stringify(S));start()}
+async function start(){
+  if(!S.t){$("login").hidden=false;return}
+  $("login").hidden=true;$("bar").hidden=false;msg("Loading…");
+  try{
+    var r=await api("/contents/catalog.json?ref="+S.b+"&t="+Date.now());
+    if(r.status==404){msg("");alert("Open the main admin first and tap Publish once. Then come back here.");return}
+    if(!r.ok){msg("");$("login").hidden=false;alert("Could not connect. Check your details and token.");return}
+    D=JSON.parse(unb64((await r.json()).content));HV=(D.videos||[]).map(function(v){return{t:v.t||"",u:v.u||""}});
+    $("app").hidden=false;rhv();rp();msg("Loaded "+D.products.length+" products.");
+  }catch(e){msg("");alert("Error: "+e.message)}
+}
+function rhv(){$("hv").innerHTML=HV.map(function(v,i){return '<div class="card"><input placeholder="Title (e.g. Shop tour)" value="'+esc(v.t)+'" oninput="HV['+i+'].t=this.value;mk()"><input placeholder="Video link" autocapitalize="none" value="'+esc(v.u)+'" oninput="HV['+i+'].u=this.value;mk()"><button class="o" onclick="HV.splice('+i+',1);mk();rhv()">Remove</button></div>'}).join("")}
+function addHV(){HV.push({t:"",u:""});rhv();mk()}
+function cv(p){return p.n in ED?ED[p.n]:(p.video||"")}
+function rp(){var q=$("q").value.toLowerCase();$("pl").innerHTML=D.products.map(function(p,i){if(q&&(p.n+" "+p.c).toLowerCase().indexOf(q)<0)return "";
+  return '<div class="card"><b>'+esc(p.n)+'</b> <small>'+esc(p.c)+'</small><label>Video link</label><input autocapitalize="none" placeholder="YouTube, TikTok, Facebook or MP4 link" value="'+esc(cv(p))+'" oninput="setP('+i+',this.value)"><label>Or upload a short video (MP4, up to about 15 MB)</label><input type="file" accept="video/*" onchange="upV('+i+',this.files[0])"></div>'}).join("")}
+function setP(i,v){ED[D.products[i].n]=v.trim();mk()}
+function upV(i,f){if(!f)return;if(f.size>16*1024*1024){alert("This video is too big. Use a YouTube link instead, or a clip under 15 MB.");return}
+  var r=new FileReader();r.onload=function(){var u=new Uint8Array(r.result),s="";for(var k=0;k<u.length;k+=32768)s+=String.fromCharCode.apply(null,u.subarray(k,k+32768));
+    var n=D.products[i].n,path="video/v-"+Date.now()+"."+(/\.webm$/i.test(f.name)?"webm":"mp4");PEND[n]={path:path,b64:btoa(s)};ED[n]=path;mk();rp()};r.readAsArrayBuffer(f)}
+async function put(path,content,message,sha){
+  var body={message:message,content:content,branch:S.b};if(sha)body.sha=sha;
+  var r=await api("/contents/"+path,{method:"PUT",body:JSON.stringify(body)});
+  if(!r.ok){var e="";try{e=(await r.json()).message}catch(x){}throw new Error(path+": "+r.status+" "+e)}
+}
+async function publish(){
+  $("save").disabled=true;
+  try{
+    for(var n in PEND){msg("Uploading video…");await put(PEND[n].path,PEND[n].b64,"Add product video");delete PEND[n]}
+    msg("Saving…");
+    var r=await api("/contents/catalog.json?ref="+S.b+"&t="+Date.now());if(!r.ok)throw new Error("Could not read the catalog");
+    var j=await r.json(),F=JSON.parse(unb64(j.content));
+    F.videos=HV.filter(function(v){return v.u.trim()}).map(function(v){return{t:v.t.trim(),u:v.u.trim()}});
+    F.products.forEach(function(p){if(p.n in ED){if(ED[p.n])p.video=ED[p.n];else delete p.video}});
+    await put("catalog.json",b64(JSON.stringify(F,null,1)),"Update videos",j.sha);
+    D=F;ED={};dirty=false;rp();msg("Published! Your site updates in about 1 minute.");
+  }catch(e){msg("");alert("Could not publish: "+e.message);$("save").disabled=false}
+}
+window.onbeforeunload=function(){return dirty?"You have unpublished changes":undefined};
+start();
+</script>
+</body>
+</html>
