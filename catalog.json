@@ -1,12 +1,7 @@
 {
  "tawk": "6ad1a3576e930434c7964f85/default",
  "paystack": "",
- "videos": [
-  {
-   "t": "Watch",
-   "u": "https://youtube.com/shorts/QkJR1dQjYBI?si=0bCW-DHE8lQn_4Ki"
-  }
- ],
+ "videos": [],
  "promo": "",
  "email": "solutionsforquality001@gmail.com",
  "social": {
@@ -308,5 +303,12 @@
    "e": "🔗",
    "d": "High-speed HDMI cable for TV and boxes."
   }
- ]
+ ],
+ "spotlight": {
+  "on": true,
+  "title": "Higheasy 4Lens Solar Camera",
+  "text": "Always on video, comes with automatic motion tracking sequencing",
+  "product": "4 Lens Higheasy Solar Camera",
+  "video": ""
+ }
 }
