@@ -23,7 +23,7 @@ header b{font:800 17px Georgia,serif}header a{color:#fff;font-size:13px}
 .w{max-width:720px;margin:0 auto;padding:16px}
 .card{background:var(--c);border:1px solid var(--l);border-radius:16px;padding:14px;margin-bottom:12px}
 label{display:block;font-size:13px;font-weight:700;margin:10px 0 4px;color:var(--m)}
-input,textarea{width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--l);background:var(--bg);color:var(--i);font:inherit;margin-bottom:6px}
+input,textarea,select{width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--l);background:var(--bg);color:var(--i);font:inherit;margin-bottom:6px}
 button{border:0;border-radius:10px;padding:11px 16px;font:700 14px system-ui,sans-serif;cursor:pointer;background:var(--n);color:#fff}
 button.g{background:var(--g);color:#2a1d05}button.o{background:transparent;color:var(--i);border:1.5px solid var(--l)}button:disabled{opacity:.5}
 .bar{position:fixed;left:0;right:0;bottom:0;background:var(--c);border-top:1px solid var(--l);padding:12px 16px;display:flex;gap:12px;align-items:center;justify-content:space-between;z-index:6}
@@ -43,6 +43,18 @@ button.g{background:var(--g);color:#2a1d05}button.o{background:transparent;color
   <button class="g" onclick="connect()">Connect</button>
 </div>
 <div id="app" hidden>
+  <h3>⭐ Front-page spotlight</h3>
+  <p style="margin:0 0 8px"><small>A big eye-catching video at the top of your homepage for your new item of the week. It plays on a loop, muted at first. Visitors tap a button to hear the sound. Replace it every week.</small></p>
+  <div class="card">
+    <label>Show on the site</label><select id="sp_on" onchange="spSet()"><option value="1">Show</option><option value="0">Hide</option></select>
+    <label>Title (e.g. New: Solar CCTV Camera)</label><input id="sp_t" oninput="spSet()">
+    <label>Short description</label><textarea id="sp_x" oninput="spSet()" style="min-height:70px"></textarea>
+    <label>Link to a product (adds an Add to cart button)</label><select id="sp_p" onchange="spSet()"></select>
+    <label>Video from your phone (first 30 seconds are used, sound is kept)</label><input id="sp_f" type="file" accept="video/*" onchange="spPick(this.files[0])">
+    <div id="sp_st" style="font-size:13px;color:var(--m)"></div>
+    <video id="sp_v" controls muted playsinline style="width:100%;max-height:300px;border-radius:12px;margin-top:8px;background:#000" hidden></video>
+    <button class="o" onclick="spClear()" style="margin-top:10px">Remove spotlight</button>
+  </div>
   <h3>Homepage videos</h3>
   <p style="margin:0 0 8px"><small>These show in the "See it in action" section. Use YouTube, TikTok or Facebook links.</small></p>
   <div id="hv"></div>
@@ -71,7 +83,7 @@ async function start(){
     if(r.status==404){msg("");alert("Open the main admin first and tap Publish once. Then come back here.");return}
     if(!r.ok){msg("");$("login").hidden=false;alert("Could not connect. Check your details and token.");return}
     D=JSON.parse(unb64((await r.json()).content));HV=(D.videos||[]).map(function(v){return{t:v.t||"",u:v.u||""}});
-    $("app").hidden=false;rhv();rp();msg("Loaded "+D.products.length+" products.");
+    $("app").hidden=false;rhv();rp();spLoad();msg("Loaded "+D.products.length+" products.");
   }catch(e){msg("");alert("Error: "+e.message)}
 }
 function rhv(){$("hv").innerHTML=HV.map(function(v,i){return '<div class="card"><input placeholder="Title (e.g. Shop tour)" value="'+esc(v.t)+'" oninput="HV['+i+'].t=this.value;mk()"><input placeholder="Video link" autocapitalize="none" value="'+esc(v.u)+'" oninput="HV['+i+'].u=this.value;mk()"><button class="o" onclick="HV.splice('+i+',1);mk();rhv()">Remove</button></div>'}).join("")}
@@ -83,6 +95,42 @@ function setP(i,v){ED[D.products[i].n]=v.trim();mk()}
 function upV(i,f){if(!f)return;if(f.size>16*1024*1024){alert("This video is too big. Use a YouTube link instead, or a clip under 15 MB.");return}
   var r=new FileReader();r.onload=function(){var u=new Uint8Array(r.result),s="";for(var k=0;k<u.length;k+=32768)s+=String.fromCharCode.apply(null,u.subarray(k,k+32768));
     var n=D.products[i].n,path="video/v-"+Date.now()+"."+(/\.webm$/i.test(f.name)?"webm":"mp4");PEND[n]={path:path,b64:btoa(s)};ED[n]=path;mk();rp()};r.readAsArrayBuffer(f)}
+var SP={on:"1",title:"",text:"",product:"",video:""},SPEND=null;
+function spLoad(){var s=D.spotlight||{};SP={on:s.on===false?"0":"1",title:s.title||"",text:s.text||"",product:s.product||"",video:s.video||""};SPEND=null;
+  $("sp_on").value=SP.on;$("sp_t").value=SP.title;$("sp_x").value=SP.text;
+  $("sp_p").innerHTML='<option value="">— none —</option>'+D.products.map(function(p){return '<option'+(p.n===SP.product?' selected':'')+'>'+esc(p.n)+'</option>'}).join("");
+  spShow()}
+function spShow(src){var el=$("sp_v"),u=src||(SP.video?"/"+SP.video:"");if(u){el.src=u;el.hidden=false}else{el.removeAttribute("src");el.hidden=true}
+  $("sp_st").textContent=SPEND?"New video ready ("+(SPEND.size/1048576).toFixed(1)+" MB). Tap Publish videos.":(SP.video?"Current video is live.":"No video yet.")}
+function spSet(){SP.on=$("sp_on").value;SP.title=$("sp_t").value.trim();SP.text=$("sp_x").value.trim();SP.product=$("sp_p").value;mk()}
+function spClear(){if(!confirm("Remove the spotlight from your homepage?"))return;SP={on:"1",title:"",text:"",product:"",video:""};SPEND=null;$("sp_t").value="";$("sp_x").value="";$("sp_p").value="";$("sp_f").value="";spShow();mk()}
+function compress(f,prog){return new Promise(function(res,rej){
+  if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream)return rej(new Error("nosupport"));
+  var v=document.createElement("video");v.muted=true;v.playsInline=true;v.setAttribute("playsinline","");v.src=URL.createObjectURL(f);
+  v.onerror=function(){rej(new Error("Could not read this video"))};
+  v.onloadedmetadata=function(){
+    var W=v.videoWidth,H=v.videoHeight,sc=Math.min(1,960/Math.max(W,H)),cw=Math.round(W*sc/2)*2,chh=Math.round(H*sc/2)*2;
+    var c=document.createElement("canvas");c.width=cw;c.height=chh;var x=c.getContext("2d");
+    var stream=c.captureStream(30),ac=null;
+    try{var AC=window.AudioContext||window.webkitAudioContext;ac=new AC();var src=ac.createMediaElementSource(v),dst=ac.createMediaStreamDestination();src.connect(dst);dst.stream.getAudioTracks().forEach(function(t){stream.addTrack(t)})}catch(e){ac=null}
+    var types=["video/mp4;codecs=avc1,mp4a.40.2","video/mp4;codecs=avc1","video/mp4","video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm"],mt="";
+    for(var i=0;i<types.length;i++){if(MediaRecorder.isTypeSupported(types[i])){mt=types[i];break}}
+    var opt={videoBitsPerSecond:1500000,audioBitsPerSecond:96000};if(mt)opt.mimeType=mt;
+    var rec=new MediaRecorder(stream,opt),chunks=[],done=false;
+    rec.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data)};
+    rec.onstop=function(){URL.revokeObjectURL(v.src);try{if(ac)ac.close()}catch(e){}res(new Blob(chunks,{type:(rec.mimeType||mt||"video/webm").split(";")[0]}))};
+    var cap=Math.min(isFinite(v.duration)?v.duration:30,30);
+    function fin(){if(done)return;done=true;try{rec.stop()}catch(e){}}
+    function draw(){x.drawImage(v,0,0,cw,chh);prog(Math.min(99,Math.round(v.currentTime/cap*100)));if(v.ended||v.currentTime>=cap)fin();else requestAnimationFrame(draw)}
+    v.muted=false;v.volume=1;
+    Promise.resolve(ac&&ac.resume?ac.resume():0).catch(function(){}).then(function(){return v.play()}).catch(function(){v.muted=true;return v.play()}).then(function(){rec.start(500);draw()},function(){rej(new Error("Could not play this video"))})}})}
+function toB64(blob){return new Promise(function(res){var r=new FileReader();r.onload=function(){res(r.result.split(",")[1])};r.readAsDataURL(blob)})}
+async function spPick(f){if(!f)return;var st=$("sp_st"),blob=null;
+  try{st.textContent="Preparing your video… please keep this page open.";blob=await compress(f,function(p){st.textContent="Preparing your video… "+p+"%"})}
+  catch(e){if(e.message==="nosupport"&&f.size<=30*1024*1024&&/mp4|webm/.test(f.type)){blob=f}else if(e.message==="nosupport"){alert("This browser can't shrink videos. Use a shorter MP4 clip under 30 MB.");$("sp_f").value="";spShow();return}else{alert(e.message);$("sp_f").value="";spShow();return}}
+  if(blob.size>35*1024*1024){alert("The video is still too big. Please pick a shorter clip.");$("sp_f").value="";spShow();return}
+  var b=await toB64(blob),path="video/spot-"+Date.now()+(/mp4/.test(blob.type)?".mp4":".webm");
+  SPEND={path:path,b64:b,size:blob.size};SP.video=path;spShow(URL.createObjectURL(blob));mk()}
 async function put(path,content,message,sha){
   var body={message:message,content:content,branch:S.b};if(sha)body.sha=sha;
   var r=await api("/contents/"+path,{method:"PUT",body:JSON.stringify(body)});
@@ -92,13 +140,17 @@ async function publish(){
   $("save").disabled=true;
   try{
     for(var n in PEND){msg("Uploading video…");await put(PEND[n].path,PEND[n].b64,"Add product video");delete PEND[n]}
+    if(SPEND){msg("Uploading spotlight video…");await put(SPEND.path,SPEND.b64,"Add spotlight video");SPEND=null}
     msg("Saving…");
     var r=await api("/contents/catalog.json?ref="+S.b+"&t="+Date.now());if(!r.ok)throw new Error("Could not read the catalog");
     var j=await r.json(),F=JSON.parse(unb64(j.content));
     F.videos=HV.filter(function(v){return v.u.trim()}).map(function(v){return{t:v.t.trim(),u:v.u.trim()}});
+    var oldV=F.spotlight&&F.spotlight.video;
+    if(SP.video||SP.title||SP.text){F.spotlight={on:SP.on==="1",title:SP.title,text:SP.text,product:SP.product,video:SP.video}}else delete F.spotlight;
     F.products.forEach(function(p){if(p.n in ED){if(ED[p.n])p.video=ED[p.n];else delete p.video}});
     await put("catalog.json",b64(JSON.stringify(F,null,1)),"Update videos",j.sha);
-    D=F;ED={};dirty=false;rp();msg("Published! Your site updates in about 1 minute.");
+    if(oldV&&oldV!==SP.video&&/^video\/spot-/.test(oldV)){try{var g=await api("/contents/"+oldV+"?ref="+S.b);if(g.ok){var gj=await g.json();await api("/contents/"+oldV,{method:"DELETE",body:JSON.stringify({message:"Remove old spotlight video",sha:gj.sha,branch:S.b})})}}catch(e){}}
+    D=F;ED={};dirty=false;rp();spLoad();msg("Published! Your site updates in about 1 minute.");
   }catch(e){msg("");alert("Could not publish: "+e.message);$("save").disabled=false}
 }
 window.onbeforeunload=function(){return dirty?"You have unpublished changes":undefined};

@@ -185,7 +185,7 @@ async function publish(){
     var out={tawk:D.tawk||"",paystack:D.paystack||"",videos:D.videos||[],promo:D.promo||"",email:D.email||"",social:D.social||{},reviews:D.reviews||[],categories:D.categories,products:D.products.map(function(p){var c={};for(var k in p)if(k[0]!=="_")c[k]=p[k];return c})};
     msg("Saving catalog…");
     var sha=null,r=await api("/contents/catalog.json?ref="+S.b+"&t="+Date.now());
-    if(r.ok){var j=await r.json();sha=j.sha;var F=JSON.parse(unb64(j.content)),fm={};(F.products||[]).forEach(function(p){fm[p.n]=p});out.videos=F.videos||[];out.products.forEach(function(p){var f=fm[p.n];if(f){if(f.video)p.video=f.video;else delete p.video}})}
+    if(r.ok){var j=await r.json();sha=j.sha;var F=JSON.parse(unb64(j.content)),fm={};(F.products||[]).forEach(function(p){fm[p.n]=p});out.videos=F.videos||[];if(F.spotlight)out.spotlight=F.spotlight;out.products.forEach(function(p){var f=fm[p.n];if(f){if(f.video)p.video=f.video;else delete p.video}})}
     await put("catalog.json",b64(JSON.stringify(out,null,1)),"Update catalog",sha);
     dirty=false;msg("Published! Your site updates in about 1 minute.");list();
   }catch(e){msg("");alert("Could not publish: "+e.message);$("save").disabled=false}
