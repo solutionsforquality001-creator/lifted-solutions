@@ -1,5 +1,12 @@
 {
  "tawk": "6ad1a3576e930434c7964f85/default",
+ "paystack": "",
+ "videos": [
+  {
+   "t": "Watch",
+   "u": "https://youtube.com/shorts/QkJR1dQjYBI?si=0bCW-DHE8lQn_4Ki"
+  }
+ ],
  "promo": "",
  "email": "solutionsforquality001@gmail.com",
  "social": {
@@ -44,6 +51,15 @@
   }
  ],
  "products": [
+  {
+   "n": "Hiasic Lithium Power Bank",
+   "c": "Power & Audio",
+   "e": "📦",
+   "d": "Introducing from the makers of haisic inverters and lithium batteries, their new made 80,000mah lithium Power",
+   "price": "7500",
+   "t": "Sale",
+   "img": "img/p-1792730331132.jpg"
+  },
   {
    "n": "DStv HD Decoder",
    "c": "Decoders",
@@ -291,12 +307,6 @@
    "c": "Accessories",
    "e": "🔗",
    "d": "High-speed HDMI cable for TV and boxes."
-  }
- ],
- "videos": [
-  {
-   "t": "Watch",
-   "u": "https://youtube.com/shorts/QkJR1dQjYBI?si=0bCW-DHE8lQn_4Ki"
   }
  ]
 }
