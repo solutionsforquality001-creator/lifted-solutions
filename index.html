@@ -49,7 +49,7 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:rg
 .stats b{display:block;font:800 22px Georgia,serif;color:var(--gold2)}
 .stats span{font-size:13px;color:#c3cae6}
 .stack{display:flex;justify-content:center;align-items:center;padding:20px 0}
-.stack img{width:min(190px,29vw);aspect-ratio:3/4;object-fit:cover;border-radius:18px;border:3px solid rgba(255,255,255,.9);box-shadow:0 20px 40px rgba(0,0,0,.45);animation:fl 6s ease-in-out infinite}
+.stack img{width:min(235px,34vw);aspect-ratio:3/4;object-fit:cover;border-radius:18px;border:3px solid rgba(255,255,255,.9);box-shadow:0 20px 40px rgba(0,0,0,.45);animation:fl 6s ease-in-out infinite}
 .stack img:nth-child(1){transform:rotate(-8deg) translateY(14px);margin-right:-26px}
 .stack img:nth-child(2){transform:scale(1.12);z-index:2;animation-delay:-2s}
 .stack img:nth-child(3){transform:rotate(8deg) translateY(14px);margin-left:-26px;animation-delay:-4s}
@@ -344,7 +344,7 @@ document.getElementById("chips").onclick=function(e){var c=e.target.getAttribute
 function cats(){document.getElementById("catgrid").innerHTML=CATS.map(function(c){var k=P.filter(function(p){return p.c===c.n}).length;return '<div class="cat" data-c="'+c.n+'">'+(c.img?'<img src="'+(IMG[c.img]||c.img)+'" alt="">':'<span>'+c.e+'</span>')+c.n+'<small>'+k+' items</small></div>'}).join("");buildMenu()}cats();
 document.getElementById("catgrid").onclick=function(e){var el=e.target.closest(".cat");if(el){pick(el.getAttribute("data-c"));document.getElementById("shop").scrollIntoView()}};
 document.getElementById("q").oninput=function(e){term=e.target.value.toLowerCase().trim();render()};
-document.getElementById("stack").innerHTML=["hs1","cam","hs3"].map(function(k){return '<img src="'+IMG[k]+'" alt="">'}).join("");
+document.getElementById("stack").innerHTML=["hs1","hs3","cam"].map(function(k){return '<img src="'+IMG[k]+'" alt="">'}).join("");
 var t="Decoders ✦ Dishes ✦ Android Boxes ✦ Solar Cameras ✦ Solar Lights ✦ Appliances ✦ ";document.getElementById("tk").innerHTML=t+t+t+t;
 function loadTawk(v){var m=String(v).match(/embed\.tawk\.to\/([\w-]+\/[\w-]+)/),id=m?m[1]:(/^[\w-]+\/[\w-]+$/.test(String(v).trim())?String(v).trim():"");if(!id||window.Tawk_API)return;document.body.classList.add("tk");window.Tawk_API={};window.Tawk_LoadStart=new Date();var s=document.createElement("script");s.async=true;s.src="https://embed.tawk.to/"+id;s.charset="UTF-8";s.setAttribute("crossorigin","*");document.head.appendChild(s)}
 loadTawk("https://embed.tawk.to/6ad1a3576e930434c7964f85/default");
