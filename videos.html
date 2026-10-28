@@ -50,7 +50,6 @@ button.g{background:var(--g);color:#2a1d05}button.o{background:transparent;color
     <label>Short description</label><textarea id="sp_x" oninput="spSet()" style="min-height:70px"></textarea>
     <label>Link to a product (adds an Add to cart button)</label><select id="sp_p" onchange="spSet()"></select>
     <label>Video from your phone (first 30 seconds are used, sound is kept)</label><input id="sp_f" type="file" accept="video/*" onchange="spPick(this.files[0])">
-    <label>Or paste a YouTube link instead (no upload needed)</label><input id="sp_l" oninput="spLink()" autocapitalize="none" placeholder="https://youtu.be/...">
     <div id="sp_st" style="font-size:13px;color:var(--m)"></div>
     <video id="sp_v" controls muted playsinline style="width:100%;max-height:300px;border-radius:12px;margin-top:8px;background:#000" hidden></video>
     <button class="o" onclick="spClear()" style="margin-top:10px">Remove spotlight</button>
@@ -95,16 +94,15 @@ function setP(i,v){ED[D.products[i].n]=v.trim();mk()}
 function upV(i,f){if(!f)return;if(f.size>16*1024*1024){alert("This video is too big. Use a YouTube link instead, or a clip under 15 MB.");return}
   var r=new FileReader();r.onload=function(){var u=new Uint8Array(r.result),s="";for(var k=0;k<u.length;k+=32768)s+=String.fromCharCode.apply(null,u.subarray(k,k+32768));
     var n=D.products[i].n,path="video/v-"+Date.now()+"."+(/\.webm$/i.test(f.name)?"webm":"mp4");PEND[n]={path:path,b64:btoa(s)};ED[n]=path;mk();rp()};r.readAsArrayBuffer(f)}
-var SP={on:"1",title:"",text:"",product:"",video:"",link:""},SPEND=null;
-function spLoad(){var s=D.spotlight||{};SP={on:s.on===false?"0":"1",title:s.title||"",text:s.text||"",product:s.product||"",video:s.video||"",link:s.link||""};SPEND=null;$("sp_l").value=SP.link;
+var SP={on:"1",title:"",text:"",product:"",video:""},SPEND=null;
+function spLoad(){var s=D.spotlight||{};SP={on:s.on===false?"0":"1",title:s.title||"",text:s.text||"",product:s.product||"",video:s.video||""};SPEND=null;
   $("sp_on").value=SP.on;$("sp_t").value=SP.title;$("sp_x").value=SP.text;
   $("sp_p").innerHTML='<option value="">— none —</option>'+D.products.map(function(p){return '<option'+(p.n===SP.product?' selected':'')+'>'+esc(p.n)+'</option>'}).join("");
   spShow()}
-function spShow(src){var el=$("sp_v"),u=SP.link?"":(src||(SP.video?"/"+SP.video:""));if(u){el.src=u;el.hidden=false}else{el.removeAttribute("src");el.hidden=true}
-  $("sp_st").textContent=SP.link?"A YouTube video is linked. Tap Publish videos.":(SPEND?"New video ready ("+(SPEND.size/1048576).toFixed(1)+" MB). Tap Publish videos.":(SP.video?"Current video is live.":"No video yet."))}
-function spLink(){SP.link=$("sp_l").value.trim();if(SP.link){SP.video="";SPEND=null;$("sp_f").value=""}spShow();mk()}
+function spShow(src){var el=$("sp_v"),u=src||(SP.video?"/"+SP.video:"");if(u){el.src=u;el.hidden=false}else{el.removeAttribute("src");el.hidden=true}
+  $("sp_st").textContent=SPEND?"New video ready ("+(SPEND.size/1048576).toFixed(1)+" MB). Tap Publish videos.":(SP.video?"Current video is live.":"No video yet.")}
 function spSet(){SP.on=$("sp_on").value;SP.title=$("sp_t").value.trim();SP.text=$("sp_x").value.trim();SP.product=$("sp_p").value;mk()}
-function spClear(){if(!confirm("Remove the spotlight from your homepage?"))return;SP={on:"1",title:"",text:"",product:"",video:"",link:""};SPEND=null;$("sp_l").value="";$("sp_t").value="";$("sp_x").value="";$("sp_p").value="";$("sp_f").value="";spShow();mk()}
+function spClear(){if(!confirm("Remove the spotlight from your homepage?"))return;SP={on:"1",title:"",text:"",product:"",video:""};SPEND=null;$("sp_t").value="";$("sp_x").value="";$("sp_p").value="";$("sp_f").value="";spShow();mk()}
 function compress(f,prog){return new Promise(function(res,rej){
   if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream)return rej(new Error("nosupport"));
   var v=document.createElement("video");v.muted=true;v.playsInline=true;v.setAttribute("playsinline","");v.src=URL.createObjectURL(f);
@@ -131,7 +129,7 @@ async function spPick(f){if(!f)return;var st=$("sp_st"),blob=null;
   catch(e){if(e.message==="nosupport"&&f.size<=30*1024*1024&&/mp4|webm/.test(f.type)){blob=f}else if(e.message==="nosupport"){alert("This browser can't shrink videos. Use a shorter MP4 clip under 30 MB.");$("sp_f").value="";spShow();return}else{alert(e.message);$("sp_f").value="";spShow();return}}
   if(blob.size>35*1024*1024){alert("The video is still too big. Please pick a shorter clip.");$("sp_f").value="";spShow();return}
   var b=await toB64(blob),path="video/spot-"+Date.now()+(/mp4/.test(blob.type)?".mp4":".webm");
-  SPEND={path:path,b64:b,size:blob.size};SP.video=path;SP.link="";$("sp_l").value="";spShow(URL.createObjectURL(blob));mk()}
+  SPEND={path:path,b64:b,size:blob.size};SP.video=path;spShow(URL.createObjectURL(blob));mk()}
 async function put(path,content,message,sha){
   var body={message:message,content:content,branch:S.b};if(sha)body.sha=sha;
   var r=await api("/contents/"+path,{method:"PUT",body:JSON.stringify(body)});
@@ -147,7 +145,7 @@ async function publish(){
     var j=await r.json(),F=JSON.parse(unb64(j.content));
     F.videos=HV.filter(function(v){return v.u.trim()}).map(function(v){return{t:v.t.trim(),u:v.u.trim()}});
     var oldV=F.spotlight&&F.spotlight.video;
-    if(SP.video||SP.link||SP.title||SP.text){F.spotlight={on:SP.on==="1",title:SP.title,text:SP.text,product:SP.product,video:SP.video,link:SP.link}}else delete F.spotlight;
+    if(SP.video||SP.title||SP.text){F.spotlight={on:SP.on==="1",title:SP.title,text:SP.text,product:SP.product,video:SP.video}}else delete F.spotlight;
     F.products.forEach(function(p){if(p.n in ED){if(ED[p.n])p.video=ED[p.n];else delete p.video}});
     await put("catalog.json",b64(JSON.stringify(F,null,1)),"Update videos",j.sha);
     if(oldV&&oldV!==SP.video&&/^video\/spot-/.test(oldV)){try{var g=await api("/contents/"+oldV+"?ref="+S.b);if(g.ok){var gj=await g.json();await api("/contents/"+oldV,{method:"DELETE",body:JSON.stringify({message:"Remove old spotlight video",sha:gj.sha,branch:S.b})})}}catch(e){}}
