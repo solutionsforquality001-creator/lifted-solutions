@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <title>Admin – Lifted Solution</title>
 <link rel="manifest" href="/manifest.json">
@@ -17,31 +17,31 @@
 :root{--n:#16224a;--g:#c69a5b;--bg:#f5f3ee;--c:#fff;--i:#141a30;--m:#5f6680;--l:#e0dacb}
 @media(prefers-color-scheme:dark){:root{--bg:#0b1126;--c:#141b38;--i:#f1efe8;--m:#a3abc8;--l:#26305a}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--i);font:16px/1.5 system-ui,sans-serif;padding-bottom:100px}
-header{background:var(--n);color:#fff;padding:calc(14px + env(safe-area-inset-top,0px)) 16px 14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
-header b{font:800 17px Georgia,serif}
-.w{max-width:720px;margin:0 auto;padding:16px}
-.card{background:var(--c);border:1px solid var(--l);border-radius:16px;padding:16px;margin-bottom:14px}
-label{display:block;font-size:13px;font-weight:700;margin:10px 0 4px;color:var(--m)}
-input,select,textarea{width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--l);background:var(--bg);color:var(--i);font:inherit}
+body{margin:0;background:var(--bg);color:var(--i);font:12.5px/1.45 system-ui,sans-serif;padding-bottom:100px}
+header{background:var(--n);color:#fff;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
+header b{font:800 14px Georgia,serif}
+.w{max-width:720px;margin:0 auto;padding:12px}
+.card{background:var(--c);border:1px solid var(--l);border-radius:12px;padding:11px;margin-bottom:10px}
+label{display:block;font-size:11px;font-weight:700;margin:10px 0 4px;color:var(--m)}
+input,select,textarea{width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid var(--l);background:var(--bg);color:var(--i);font:inherit;font-size:12.5px}
 textarea{min-height:70px}
-button{border:0;border-radius:10px;padding:11px 16px;font:700 14px system-ui,sans-serif;cursor:pointer;background:var(--n);color:#fff}
+button{border:0;border-radius:8px;padding:8px 12px;font:700 12px system-ui,sans-serif;cursor:pointer;background:var(--n);color:#fff}
 button.g{background:var(--g);color:#2a1d05}
 button.o{background:transparent;color:var(--i);border:1.5px solid var(--l)}
 button:disabled{opacity:.5}
 .row{display:flex;gap:10px;align-items:center;background:var(--c);border:1px solid var(--l);border-radius:14px;padding:10px;margin-bottom:8px}
-.row img,.em{width:56px;height:56px;border-radius:10px;object-fit:cover;flex:none;background:var(--bg);display:grid;place-items:center;font-size:28px}
-.inf{flex:1;min-width:0}.inf b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.inf small{color:var(--m)}
+.row img,.em{width:42px;height:42px;border-radius:10px;object-fit:cover;flex:none;background:var(--bg);display:grid;place-items:center;font-size:20px}
+.inf{flex:1;min-width:0}.inf b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.inf small{color:var(--m);font-size:11px}
 .act{display:flex;gap:6px}
-.bar{position:fixed;left:0;right:0;bottom:0;background:var(--c);border-top:1px solid var(--l);padding:12px 16px;display:flex;gap:12px;align-items:center;justify-content:space-between;z-index:6}
-#msg{font-size:13px;color:var(--m);flex:1}
-#pv{width:120px;height:120px;object-fit:cover;border-radius:12px;margin-top:8px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--c);border-top:1px solid var(--l);padding:9px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between;z-index:6}
+#msg{font-size:11px;color:var(--m);flex:1}
+#pv{width:90px;height:90px;object-fit:cover;border-radius:12px;margin-top:8px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 [hidden]{display:none!important}
 </style>
 </head>
 <body>
-<header><b>Lifted Solution · Admin</b><a href="/videos.html" style="color:#fff;font-size:13px;margin-right:12px">🎬 Videos</a><button class="o" id="out" onclick="logout()" hidden style="color:#fff;border-color:#fff4">Log out</button></header>
+<header><b>Lifted Solution · Admin</b><a href="/videos.html" style="color:#fff;font-size:11px;margin-right:10px">🎬 Videos</a><button class="o" id="out" onclick="logout()" hidden style="color:#fff;border-color:#fff4">Log out</button></header>
 <div class="w">
 
 <div id="login" class="card">
