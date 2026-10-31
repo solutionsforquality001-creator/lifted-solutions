@@ -114,14 +114,17 @@ async function start(fresh){
     if(!rp.ok){msg("");$("bar").hidden=true;alert("Could not open the repository. Check the username, repository name and token.");return}
     var t=await (await fetch("index.html?"+Date.now())).text();
     IMG=grab(t,/var IMG=(\{[\s\S]*?\});/)||{};
-    DEF={c:grab(t,/var CATS=(\[[\s\S]*?\]);/)||[],p:grab(t,/var P=(\[[\s\S]*?\n\]);/)||[]};
+    DEF={c:grab(t,/var CATS=(\[[\s\S]*?\]);/)||[],p:grab(t,/var P=(\[[\s\S]*?\n\]);/)||[],x:grab(t,/var EXTRA=(\[[\s\S]*?\n\]);/)||[]};
     var r=await api("/contents/catalog.json?ref="+S.b+"&t="+Date.now());
     if(r.ok){var j=await r.json();D=JSON.parse(unb64(j.content));dirty=false}
     else if(r.status==404){D={categories:DEF.c,products:DEF.p};dirty=true}
     else{msg("Error "+r.status);return}
+    var seen=D.merged||[],have={};D.products.forEach(function(p){have[p.n]=1});
+    var add=(DEF.x||[]).filter(function(x){return !have[x.n]&&seen.indexOf(x.n)<0});
+    if(add.length){D.products=add.concat(D.products);D.merged=seen.concat(add.map(function(x){return x.n}));dirty=true;add.forEach(function(x){if(!D.categories.some(function(c){return c.n===x.c}))D.categories.push({n:x.c,e:x.e||"📦"})})}
     localStorage.setItem("ls_admin",JSON.stringify(S));
     $("tk").value=D.tawk||"";D.social=D.social||{};$("s_promo").value=D.promo||"";$("s_ig").value=D.social.ig||"";$("s_fb").value=D.social.fb||"";$("s_tt").value=D.social.tt||"";$("s_yt").value=D.social.yt||"";$("s_em").value=D.email||"";$("s_ps").value=D.paystack||"";$("s_rv").value=(D.reviews||[]).map(function(r){return (r.n||"")+" | "+r.t}).join("\n");$("tkm").textContent=D.tawk?"✔ Chat ID found: "+D.tawk:"";$("login").hidden=true;$("app").hidden=false;$("out").hidden=false;
-    msg(dirty?"Tap Publish changes to start using the admin.":"Loaded "+D.products.length+" products.");list();
+    msg(dirty?"New products were added. Tap Publish changes to save them.":"Loaded "+D.products.length+" products.");list();
   }catch(e){msg("");alert("Error: "+e.message)}
 }
 
@@ -181,7 +184,7 @@ async function publish(){
       if(p._pend){msg("Uploading photo "+(i+1)+"…");await put(p._pend.path,p._pend.b64,"Add product photo");p.img=p._pend.path;delete p._pend}}
     var used={};D.products.forEach(function(p){used[p.c]=1});
     D.categories=D.categories.filter(function(c){return used[c.n]});
-    var out={tawk:D.tawk||"",paystack:D.paystack||"",videos:D.videos||[],promo:D.promo||"",email:D.email||"",social:D.social||{},reviews:D.reviews||[],categories:D.categories,products:D.products.map(function(p){var c={};for(var k in p)if(k[0]!=="_")c[k]=p[k];return c})};
+    var out={merged:D.merged||[],tawk:D.tawk||"",paystack:D.paystack||"",videos:D.videos||[],promo:D.promo||"",email:D.email||"",social:D.social||{},reviews:D.reviews||[],categories:D.categories,products:D.products.map(function(p){var c={};for(var k in p)if(k[0]!=="_")c[k]=p[k];return c})};
     msg("Saving catalog…");
     var sha=null,r=await api("/contents/catalog.json?ref="+S.b+"&t="+Date.now());
     if(r.ok){var j=await r.json();sha=j.sha;var F=JSON.parse(unb64(j.content)),fm={};(F.products||[]).forEach(function(p){fm[p.n]=p});out.videos=F.videos||[];if(F.spotlight)out.spotlight=F.spotlight;out.products.forEach(function(p){var f=fm[p.n];if(f){if(f.video)p.video=f.video;else delete p.video}})}
